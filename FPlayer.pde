@@ -15,6 +15,9 @@ class FPlayer extends FBox{
         //println(contacts.get(i).getY()+" "+getY());
         hasContact=true;
       }
+      if(contacts.get(i).getBody1().getFillColor()==#123456){
+        setPosition(300, 0);
+      }
     }
     //println(contacts.size());
     if(wkey && hasContact){

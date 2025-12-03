@@ -16,23 +16,54 @@ int zoom;
 FBomb bomb=null;
 ArrayList<FBox> boxes;
 int gridSize;  
+PImage stone;
+PImage ice;
+PImage trampoline;
+PImage spike;
 void setup(){
   size(1500, 1000, P2D);
   gridSize=25;
   Fisica.init(this);
   world = new FWorld(-10000, -10000, 10000, 10000);
   world.setGravity(0, 900);
-  map=loadImage("image.png");
+  map=loadImage("verytim.png");
+  stone=loadImage("brick.png");
+  stone.resize(gridSize, gridSize);
+  ice=loadImage("blueBlock.png");
+  ice.resize(gridSize, gridSize);
+  trampoline=loadImage("beautifultrampoline.png");
+  trampoline.resize(gridSize, gridSize);
+    spike=loadImage("spike.png");
+  spike.resize(gridSize, gridSize);
   boxes=new ArrayList<>();
   
   for(int y=0;y<map.height;y++){
     for(int x=0;x<map.width;x++){
       color c=map.get(x, y);
+      FBox b = new FBox(gridSize, gridSize);
+      b.setPosition(x*gridSize, y*gridSize);
       if(c==black){
-        FBox b = new FBox(gridSize, gridSize);
-        b.setPosition(x*gridSize, y*gridSize);
         b.setStatic(true);
-        b.setFillColor(black);  
+        b.attachImage(stone);
+        b.setFriction(4);
+        world.add(b);
+      }
+      if(c==#00A2E8){
+        b.setStatic(true);
+        b.attachImage(ice);
+        b.setFriction(0);
+        world.add(b);
+      }
+      if(c==#22B14C){
+        b.setStatic(true);
+        b.attachImage(trampoline);
+        b.setRestitution(1);
+        world.add(b);
+      }
+      if(c==#ED1C24){
+        b.setStatic(true);
+        b.attachImage(spike);
+        b.setFillColor(#123456);
         world.add(b);
       }
     }
