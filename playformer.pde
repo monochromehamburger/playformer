@@ -20,6 +20,8 @@ PImage stone;
 PImage ice;
 PImage trampoline;
 PImage spike;
+PImage bridge;
+ArrayList<FGameObject> terrain;
 void setup(){
   size(1500, 1000, P2D);
   gridSize=25;
@@ -33,8 +35,11 @@ void setup(){
   ice.resize(gridSize, gridSize);
   trampoline=loadImage("beautifultrampoline.png");
   trampoline.resize(gridSize, gridSize);
-    spike=loadImage("spike.png");
+  spike=loadImage("spike.png");
   spike.resize(gridSize, gridSize);
+  bridge=loadImage("bridge_e.png");
+  bridge.resize(gridSize, gridSize);
+  terrain = new ArrayList<FGameObject>();
   boxes=new ArrayList<>();
   
   for(int y=0;y<map.height;y++){
@@ -65,6 +70,12 @@ void setup(){
         b.attachImage(spike);
         b.setFillColor(#123456);
         world.add(b);
+        b.setName("Spike");
+      }
+      if(c==#B97A57){
+        FBridge br=new FBridge(gridSize*x, gridSize*y);
+        world.add(br);
+        terrain.add(br);
       }
     }
   }
@@ -74,9 +85,16 @@ void setup(){
 void draw(){
   background(100, 200, 30);
   drawWorld();
-  player1.act();
+  actWorld();
   //  player1.setVelocity(vx*(gridSize/25), player1.getVelocityY());
   
+}
+void actWorld(){
+  player1.act();
+  for(int i=0;i<terrain.size();i++){
+    FGameObject t = terrain.get(i);
+    t.act();
+  }
 }
 void drawWorld(){
   pushMatrix();
