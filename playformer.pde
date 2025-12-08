@@ -21,9 +21,19 @@ PImage ice;
 PImage trampoline;
 PImage spike;
 PImage bridge;
+PImage treeIntersect;
+PImage treeMiddle;  
+PImage treeEndWest;
+PImage treeEndEast;
+PImage treeTrunk;
 ArrayList<FGameObject> terrain;
+color green=#B5E61D;
+color brown=#880015;
+int spawnX, spawnY;
 void setup(){
   size(1500, 1000, P2D);
+  spawnX=300;
+  spawnY=0;
   gridSize=25;
   Fisica.init(this);
   world = new FWorld(-10000, -10000, 10000, 10000);
@@ -39,34 +49,49 @@ void setup(){
   spike.resize(gridSize, gridSize);
   bridge=loadImage("bridge_e.png");
   bridge.resize(gridSize, gridSize);
+  treeIntersect=loadImage("tree_intersect.png");
+  treeIntersect.resize(gridSize, gridSize);
+  treeMiddle=loadImage("treetop_center.png");
+  treeMiddle.resize(gridSize, gridSize);
+  treeEndEast=loadImage("treetop_e.png");
+  treeEndEast.resize(gridSize, gridSize);
+  treeEndWest=loadImage("treetop_w.png");
+  treeEndWest.resize(gridSize, gridSize);
+  treeTrunk=loadImage("tree_trunk.png");
+  treeTrunk.resize(gridSize, gridSize);
   terrain = new ArrayList<FGameObject>();
   boxes=new ArrayList<>();
-  
+  reset();
+  zoom=2;
+}
+void reset(){
+  world = new FWorld(-10000, -10000, 10000, 10000);
+  world.setGravity(0, 900);
   for(int y=0;y<map.height;y++){
     for(int x=0;x<map.width;x++){
       color c=map.get(x, y);
+      color s=map.get(x, y+1);
+      color w=map.get(x-1, y);
+      color e=map.get(x+1, y);
       FBox b = new FBox(gridSize, gridSize);
       b.setPosition(x*gridSize, y*gridSize);
+      b.setStatic(true);
       if(c==black){
-        b.setStatic(true);
         b.attachImage(stone);
         b.setFriction(4);
         world.add(b);
       }
       if(c==#00A2E8){
-        b.setStatic(true);
         b.attachImage(ice);
         b.setFriction(0);
         world.add(b);
       }
       if(c==#22B14C){
-        b.setStatic(true);
         b.attachImage(trampoline);
         b.setRestitution(1);
         world.add(b);
       }
       if(c==#ED1C24){
-        b.setStatic(true);
         b.attachImage(spike);
         b.setFillColor(#123456);
         world.add(b);
@@ -77,10 +102,44 @@ void setup(){
         world.add(br);
         terrain.add(br);
       }
+      if(c==green && s==brown){
+        b.attachImage(treeIntersect);
+        b.setName("treetop");
+        b.setFriction(4);
+        world.add(b);
+      }
+      else if(c==green && w==green && e==green){
+        b.attachImage(treeMiddle);
+        b.setName("treetop");
+        b.setFriction(4);
+        world.add(b);
+      }
+      else if(c==green && w!=green){
+        b.attachImage(treeEndWest);
+        b.setName("treetop");
+        b.setFriction(4);
+        world.add(b);
+      }
+      else if(c==green && e!=green){
+        b.attachImage(treeEndEast);
+        b.setName("treetop");
+        b.setFriction(4);
+        world.add(b);
+      }
+      if(c==brown){
+        b.attachImage(treeTrunk);
+        world.add(b);
+      }
+      if(c==#FFF200){
+        b.setFillColor(#FFF200);
+        b.setName("checkpoint");
+        world.add(b);
+      }
+      
     }
   }
   loadPlayer();
-  zoom=2;
+  player1.setVelocity(0, 0);
 }
 void draw(){
   background(100, 200, 30);

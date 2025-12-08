@@ -1,7 +1,7 @@
 class FPlayer extends FBox{
   FPlayer(){
     super(gridSize, gridSize);
-    setPosition(300, 0);
+    setPosition(spawnX, spawnY);
     setName("Player");
     setRotatable(false);
     setFillColor(#F404D3);
@@ -18,7 +18,12 @@ class FPlayer extends FBox{
         hasContact=true;
       }
       if(contacts.get(i).getBody1().getFillColor()==#123456){
-        setPosition(300, 0);
+        setPosition(spawnX, spawnY);
+        reset();
+      }
+      if(contacts.get(i).contains("checkpoint")){
+        spawnY=1000;
+        spawnX=0;
       }
     }
     //println(contacts.size());
