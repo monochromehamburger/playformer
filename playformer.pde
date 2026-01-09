@@ -30,6 +30,7 @@ PImage walk1;
 PImage walk2;
 PImage jump;
 PImage goomba;
+PImage thwomp, thwompEvil, hammerBro, hammer, hammerBroReversed;
 ArrayList<FGameObject> terrain;
 ArrayList<FGameObject> enemies;
 color green=#B5E61D;
@@ -37,13 +38,13 @@ color brown=#880015;
 float spawnX, spawnY;
 void setup(){
   size(1500, 1000, P2D);
-  spawnX=300;
+  spawnX=200;
   spawnY=0;
   gridSize=25;
   Fisica.init(this);
   world = new FWorld(-20000, -20000, 20000, 20000);
   world.setGravity(0, 900);
-  map=loadImage("verytim.png");
+  map=loadImage("newMap.png");
   stone=loadImage("brick.png");
   stone.resize(gridSize, gridSize);
   ice=loadImage("blueBlock.png");
@@ -72,6 +73,16 @@ void setup(){
   goomba.resize(gridSize, gridSize);
   walk2.resize(gridSize, gridSize);
   walk1.resize(gridSize/2+gridSize/4, gridSize);
+  thwomp=loadImage("thwomp.png");
+  thwomp.resize(gridSize*2, gridSize*2);
+  thwompEvil=loadImage("thwompEvil.png");
+  thwompEvil.resize(gridSize*2, gridSize*2);
+  hammerBro=loadImage("hammerBro.png");
+  hammerBro.resize((int)(gridSize*2), (int)(gridSize*2));
+  hammer=loadImage("hammer.png");
+  hammer.resize(gridSize/2, gridSize/2);
+  hammerBroReversed=loadImage("hammerBroReversed.png");
+  hammerBroReversed.resize((int)(gridSize*2), (int)(gridSize*2));
   terrain = new ArrayList<FGameObject>();
   boxes=new ArrayList<>();
   enemies=new ArrayList<>();
@@ -81,6 +92,7 @@ void setup(){
 void reset(){
   world = new FWorld(-10000, -10000, 10000, 10000);
   world.setGravity(0, 900);
+  enemies=new ArrayList<FGameObject>();
   for(int y=0;y<map.height;y++){
     for(int x=0;x<map.width;x++){
       color c=map.get(x, y);
@@ -99,7 +111,7 @@ void reset(){
       if(c==#00A2E8){
         b.attachImage(ice);
         b.setFriction(0);
-        b.setName("idk");
+        b.setName("ice");
         world.add(b);
       }
       if(c==#22B14C){
@@ -115,13 +127,14 @@ void reset(){
         p.vertex(x*gridSize, y*gridSize-gridSize/2);
         //p.attachImage(spike);
         p.setFillColor(#123456);
-        p.setName("Spike");
+        p.setName("spike");
         p.setStatic(true);
         world.add(p);
       }
       if(c==#B97A57){
         FBridge br=new FBridge(gridSize*x, gridSize*y);
         br.setFriction(4);
+        br.setName("bridge");
         world.add(br);
         terrain.add(br);
       }
@@ -151,6 +164,7 @@ void reset(){
       }
       if(c==brown){
         b.attachImage(treeTrunk);
+        b.setName("treeTrunk");
         world.add(b);
       }
       if(c==#FFF200){
@@ -160,10 +174,28 @@ void reset(){
       }
       if(c==#FFAEC9){
         FGoomba g=new FGoomba(x*gridSize, y*gridSize);
+        g.setName("goomba");
         world.add(g);
         enemies.add(g);
       }
-      
+      if(c==#7F7F7F){
+        int newY=y;
+        newY++;
+        c=map.get(x, newY);
+        while(c==#FFFFFF || c==#B97A57){
+          newY++;
+          c=map.get(x, newY);
+        }
+        FThwomp t=new FThwomp(x*gridSize+gridSize/2, y*gridSize+gridSize/2, (newY)*gridSize);
+        t.setName("thwomp");
+        world.add(t);
+        enemies.add(t);
+      }
+      if(c==#A349A4){
+        FHammerBro h = new FHammerBro(x*gridSize, y*gridSize-gridSize/2);
+        world.add(h);
+        enemies.add(h);
+      }
     }
   }
   loadPlayer();

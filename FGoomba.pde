@@ -3,7 +3,7 @@ class FGoomba extends FGameObject{
   int speed=50;
   int frame=0;
   FGoomba(float x, float y){
-    super();
+    super(gridSize, gridSize);
     setPosition(x, y);
     setName("goomba");
     attachImage(goomba);
@@ -14,7 +14,7 @@ class FGoomba extends FGameObject{
     move();
   }
   void collide(){
-    if(isTouching("Spike") || isTouching("goomba")){
+    if(isTouching("spike") || isTouching("goomba")){
       direction*=-1;
       setPosition(getX()+direction, getY());
     }
@@ -22,6 +22,7 @@ class FGoomba extends FGameObject{
       if(player1.getY()<getY()-gridSize/2){
         world.remove(this);
         enemies.remove(this);
+        player1.setVelocity(player1.getVelocityX(), -250);
       }
       else{
         

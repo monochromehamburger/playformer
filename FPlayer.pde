@@ -1,10 +1,12 @@
 class FPlayer extends FBox{
+  int frame;
   FPlayer(){
     super(gridSize, gridSize);
-    setPosition(spawnX, spawnY);
+    setPosition(56*gridSize, 45*gridSize-60);
     setName("Player");
     setRotatable(false);
     setFillColor(#F404D3);
+    frame=0;
   }
   void act(){
     float vy=getVelocityY();
@@ -21,14 +23,38 @@ class FPlayer extends FBox{
         setPosition(spawnX, spawnY);
         reset();
       }
+      String fc=contacts.get(i).getBody2().getName();
+      //println(fc);
+      if(fc.equals("hammer")){
+        setPosition(spawnX, spawnY);
+        reset();
+      }
       if(contacts.get(i).contains("checkpoint")){
-        spawnY=1000;
-        spawnX=0;
+        spawnY=contacts.get(i).getY()-50;
+        spawnX=contacts.get(i).getX();
       }
     }
     //println(contacts.size());
     if(wkey && hasContact){
       setVelocity(getVelocityX(), -500);
+    }
+    animate();
+  }
+  void animate(){
+    frame++;
+    if(abs(getVelocityY())>0.2){
+      attachImage(jump);
+    }
+    else if(abs(getVelocityX())>0.1){
+      if((frame/10)%2==0){
+        attachImage(walk1);
+      }
+      else if((frame/10)%2==1){ 
+        attachImage(walk2);
+      }
+    }
+    else{
+      attachImage(walk2);
     }
   }
 }
