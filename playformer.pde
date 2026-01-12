@@ -30,7 +30,7 @@ PImage walk1;
 PImage walk2;
 PImage jump;
 PImage goomba;
-PImage thwomp, thwompEvil, hammerBro, hammer, hammerBroReversed;
+PImage thwomp, thwompEvil, hammerBro, hammer, hammerBroReversed, gravityDown;
 ArrayList<FGameObject> terrain;
 ArrayList<FGameObject> enemies;
 color green=#B5E61D;
@@ -82,7 +82,9 @@ void setup(){
   hammer=loadImage("hammer.png");
   hammer.resize(gridSize/2, gridSize/2);
   hammerBroReversed=loadImage("hammerBroReversed.png");
-  hammerBroReversed.resize((int)(gridSize*2), (int)(gridSize*2));
+  hammer.resize(gridSize/2, gridSize/2);
+  gravityDown=loadImage("gravityDown.png");
+  gravityDown.resize(gridSize, gridSize);
   terrain = new ArrayList<FGameObject>();
   boxes=new ArrayList<>();
   enemies=new ArrayList<>();
@@ -192,9 +194,14 @@ void reset(){
         enemies.add(t);
       }
       if(c==#A349A4){
-        FHammerBro h = new FHammerBro(x*gridSize, y*gridSize-gridSize/2);
+        FHammerBro h = new FHammerBro(x*gridSize+gridSize/2, y*gridSize+gridSize/2);
         world.add(h);
         enemies.add(h);
+      }
+      if(c==#A349A4){
+        b.attachImage(gravityDown);
+        b.setName("lowGravity");
+        world.add(b);
       }
     }
   }
