@@ -1,25 +1,19 @@
-class FGravityChanger extends FGameObject{
+class FWater extends FGameObject{
   int timer;
   boolean timerStarted;
-  FGravityChanger(float x, float y){
+  FWater(float x, float y){
     super(gridSize, gridSize);
     setPosition(x, y);
-    setName("bridge");
-    attachImage(bridge);
+    setName("water");
+    attachImage(water);
     setStatic(true);
-    timer=15;
+    setSensor(true);
   }
   
   void act(){
     if(isTouching("Player")){
-      timerStarted=true;
-    }
-    if(timerStarted){
-      timer--;
-    }
-    if(timer==0){
-      setSensor(true);
-      setStatic(false);
+      player1.adjustVelocity(0, -10);
+      player1.setVelocity(player1.getVelocityX(), max(player1.getVelocityY(), -50));
     }
   }
 }

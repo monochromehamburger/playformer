@@ -2,7 +2,7 @@ class FPlayer extends FBox{
   int frame;
   FPlayer(){
     super(gridSize, gridSize);
-    setPosition(181*gridSize, 18*gridSize-60);
+    setPosition(spawnX, spawnY);
     setName("Player");
     setRotatable(false);
     setFillColor(#F404D3);
@@ -24,9 +24,19 @@ class FPlayer extends FBox{
         reset();
       }
       String fc=contacts.get(i).getBody2().getName();
-      //println(fc);
+      String fc1=contacts.get(i).getBody1().getName();
+      println(fc);
       if(fc.equals("hammer")){
         setPosition(spawnX, spawnY);
+        reset();
+      }
+      if(fc.equals("ending") || fc1.equals("ending")){
+        level++;
+        if(level==2){
+          spawnX=50;
+          spawnY=900;
+        }
+        println(level);
         reset();
       }
       if(contacts.get(i).contains("checkpoint")){
@@ -38,6 +48,7 @@ class FPlayer extends FBox{
     if(wkey && hasContact){
       setVelocity(getVelocityX(), -500);
     }
+   
     animate();
   }
   void animate(){

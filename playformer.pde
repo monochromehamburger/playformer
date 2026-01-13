@@ -30,12 +30,13 @@ PImage walk1;
 PImage walk2;
 PImage jump;
 PImage goomba;
-PImage thwomp, thwompEvil, hammerBro, hammer, hammerBroReversed, gravityDown;
+PImage thwomp, thwompEvil, hammerBro, hammer, hammerBroReversed, water;
 ArrayList<FGameObject> terrain;
 ArrayList<FGameObject> enemies;
 color green=#B5E61D;
 color brown=#880015;
 float spawnX, spawnY;
+int level=1;
 void setup(){
   size(1500, 1000, P2D);
   spawnX=200;
@@ -44,7 +45,6 @@ void setup(){
   Fisica.init(this);
   world = new FWorld(-20000, -20000, 20000, 20000);
   world.setGravity(0, 900);
-  map=loadImage("newMap.png");
   stone=loadImage("brick.png");
   stone.resize(gridSize, gridSize);
   ice=loadImage("blueBlock.png");
@@ -78,13 +78,13 @@ void setup(){
   thwompEvil=loadImage("thwompEvil.png");
   thwompEvil.resize(gridSize*2, gridSize*2);
   hammerBro=loadImage("hammerBro.png");
-  hammerBro.resize((int)(gridSize*2), (int)(gridSize*2));
+  hammerBro.resize((gridSize*2), (gridSize*2));
   hammer=loadImage("hammer.png");
   hammer.resize(gridSize/2, gridSize/2);
   hammerBroReversed=loadImage("hammerBroReversed.png");
-  hammer.resize(gridSize/2, gridSize/2);
-  gravityDown=loadImage("gravityDown.png");
-  gravityDown.resize(gridSize, gridSize);
+  hammerBroReversed.resize(gridSize*2, gridSize*2);
+  water=loadImage("water.png");
+  water.resize(gridSize, gridSize);
   terrain = new ArrayList<FGameObject>();
   boxes=new ArrayList<>();
   enemies=new ArrayList<>();
@@ -95,6 +95,12 @@ void reset(){
   world = new FWorld(-10000, -10000, 10000, 10000);
   world.setGravity(0, 900);
   enemies=new ArrayList<FGameObject>();
+  if(level==1){
+    map=loadImage("level2.png");
+  }
+  else if(level==2){
+    map=loadImage("level2.png");
+  }
   for(int y=0;y<map.height;y++){
     for(int x=0;x<map.width;x++){
       color c=map.get(x, y);
@@ -198,10 +204,29 @@ void reset(){
         world.add(h);
         enemies.add(h);
       }
-      if(c==#A349A4){
-        b.attachImage(gravityDown);
-        b.setName("lowGravity");
+      if(c==#3F48CC){
+        FWater g=new FWater(gridSize*x, gridSize*y);
+        g.attachImage(water);
+        g.setName("water");
+        terrain.add(g);
+        world.add(g);
+      }
+      if(c==#FFC90E){
+        b.setFillColor(#FFC90E);
+        b.setName("ending");
         world.add(b);
+        
+      }
+      if(c==#FF7F27){
+        FPoly p=new FPoly();
+        p.vertex(x*gridSize-gridSize/2, y*gridSize-gridSize/2);
+        p.vertex(x*gridSize+gridSize/2, y*gridSize-gridSize/2);
+        p.vertex(x*gridSize, y*gridSize+gridSize/2);
+        //p.attachImage(spike);
+        p.setFillColor(#123456);
+        p.setName("spike");
+        p.setStatic(true);
+        world.add(p);
       }
     }
   }

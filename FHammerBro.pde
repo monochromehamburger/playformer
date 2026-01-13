@@ -13,7 +13,7 @@ class FHammerBro extends FGameObject{
     
   }
   void act(){
-    println("what");
+    //println("what");
     collide();
     move();
     timer++;
