@@ -16,27 +16,16 @@ int zoom;
 FBomb bomb=null; 
 ArrayList<FBox> boxes;
 int gridSize;  
-PImage stone;
-PImage ice;
-PImage trampoline;
-PImage spike;
-PImage bridge;
-PImage treeIntersect;
-PImage treeMiddle;  
-PImage treeEndWest;
-PImage treeEndEast;
-PImage treeTrunk;
-PImage walk1;
-PImage walk2;
-PImage jump;
-PImage goomba;
-PImage thwomp, thwompEvil, hammerBro, hammer, hammerBroReversed, water;
+PImage stone, ice, trampoline, spike, bridge, treeIntersect, treeMiddle, treeEndWest, treeEndEast, treeTrunk, walk1, walk2, jump, goomba, thwomp, thwompEvil, hammerBro, hammer, hammerBroReversed, portal;
 ArrayList<FGameObject> terrain;
 ArrayList<FGameObject> enemies;
+ArrayList<FPortal> openPortals=new ArrayList<>();
 color green=#B5E61D;
 color brown=#880015;
 float spawnX, spawnY;
+PImage[] water;
 int level=1;
+int portalCooldown=0;
 void setup(){
   size(1500, 1000, P2D);
   spawnX=200;
@@ -83,8 +72,13 @@ void setup(){
   hammer.resize(gridSize/2, gridSize/2);
   hammerBroReversed=loadImage("hammerBroReversed.png");
   hammerBroReversed.resize(gridSize*2, gridSize*2);
-  water=loadImage("water.png");
-  water.resize(gridSize, gridSize);
+  water=new PImage[2];
+  water[0]=loadImage("water.png");
+  water[0].resize(gridSize, gridSize);
+  water[1]=loadImage("waterWave.png");
+  water[1].resize(gridSize, gridSize);
+  portal=loadImage("portal.png");
+  portal.resize((int)(0.8*gridSize), (int)(0.8*gridSize));
   terrain = new ArrayList<FGameObject>();
   boxes=new ArrayList<>();
   enemies=new ArrayList<>();
@@ -116,19 +110,19 @@ void reset(){
         b.setName("wall");
         world.add(b);
       }
-      if(c==#00A2E8){
+      else if(c==#00A2E8){
         b.attachImage(ice);
         b.setFriction(0);
         b.setName("ice");
         world.add(b);
       }
-      if(c==#22B14C){
+      else if(c==#22B14C){
         b.attachImage(trampoline);
         b.setRestitution(1);
         b.setName("idk");
         world.add(b);
       }
-      if(c==#ED1C24){
+      else if(c==#ED1C24){
         FPoly p=new FPoly();
         p.vertex(x*gridSize-gridSize/2, y*gridSize+gridSize/2);
         p.vertex(x*gridSize+gridSize/2, y*gridSize+gridSize/2);
@@ -139,14 +133,14 @@ void reset(){
         p.setStatic(true);
         world.add(p);
       }
-      if(c==#B97A57){
+      else if(c==#B97A57){
         FBridge br=new FBridge(gridSize*x, gridSize*y);
         br.setFriction(4);
         br.setName("bridge");
         world.add(br);
         terrain.add(br);
       }
-      if(c==green && s==brown){
+      else if(c==green && s==brown){
         b.attachImage(treeIntersect);
         b.setName("treetop");
         b.setFriction(4);
@@ -170,23 +164,23 @@ void reset(){
         b.setFriction(4);
         world.add(b);
       }
-      if(c==brown){
+      else if(c==brown){
         b.attachImage(treeTrunk);
         b.setName("treeTrunk");
         world.add(b);
       }
-      if(c==#FFF200){
+      else if(c==#FFF200){
         b.setFillColor(#FFF200);
         b.setName("checkpoint");
         world.add(b);
       }
-      if(c==#FFAEC9){
+      else if(c==#FFAEC9){
         FGoomba g=new FGoomba(x*gridSize, y*gridSize);
         g.setName("goomba");
         world.add(g);
         enemies.add(g);
       }
-      if(c==#7F7F7F){
+      else if(c==#7F7F7F){
         int newY=y;
         newY++;
         c=map.get(x, newY);
@@ -199,25 +193,24 @@ void reset(){
         world.add(t);
         enemies.add(t);
       }
-      if(c==#A349A4){
+      else if(c==#A349A4){
         FHammerBro h = new FHammerBro(x*gridSize+gridSize/2, y*gridSize+gridSize/2);
         world.add(h);
         enemies.add(h);
       }
-      if(c==#3F48CC){
+      else if(c==#3F48CC){
         FWater g=new FWater(gridSize*x, gridSize*y);
-        g.attachImage(water);
         g.setName("water");
         terrain.add(g);
         world.add(g);
       }
-      if(c==#FFC90E){
+      else if(c==#FFC90E){
         b.setFillColor(#FFC90E);
         b.setName("ending");
         world.add(b);
         
       }
-      if(c==#FF7F27){
+      else if(c==#FF7F27){
         FPoly p=new FPoly();
         p.vertex(x*gridSize-gridSize/2, y*gridSize-gridSize/2);
         p.vertex(x*gridSize+gridSize/2, y*gridSize-gridSize/2);
@@ -227,6 +220,29 @@ void reset(){
         p.setName("spike");
         p.setStatic(true);
         world.add(p);
+      }
+      else if(c==#FFFFFF){
+      }
+      else{
+        boolean found=false;
+        for(int i=openPortals.size()-1;i>=0;i--){
+          if(openPortals.get(i).getFillColor()==c){
+            FPortal p = new FPortal(x*gridSize, y*gridSize, openPortals.get(i));
+            openPortals.get(i).attachPortal(p);
+            p.setFillColor(c);
+            terrain.add(p);
+            terrain.add(openPortals.get(i));
+            world.add(p);
+            world.add(openPortals.get(i));
+            openPortals.remove(i);
+            found=true;
+            break;
+          }
+        }
+        if(found==false){
+          openPortals.add(new FPortal(x*gridSize, y*gridSize));
+          openPortals.get(openPortals.size()-1).setFillColor(c);
+        }
       }
     }
   }
@@ -252,6 +268,7 @@ void actWorld(){
   }
 }
 void drawWorld(){
+  portalCooldown--;
   pushMatrix();
   translate(-player1.getX()*zoom+width/2, -player1.getY()*zoom+height/2);
   scale(zoom);

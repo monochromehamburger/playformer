@@ -2,7 +2,7 @@ class FPlayer extends FBox{
   int frame;
   FPlayer(){
     super(gridSize, gridSize);
-    setPosition(spawnX, spawnY);
+    setPosition(26*gridSize, 27*gridSize-60);
     setName("Player");
     setRotatable(false);
     setFillColor(#F404D3);
@@ -25,7 +25,6 @@ class FPlayer extends FBox{
       }
       String fc=contacts.get(i).getBody2().getName();
       String fc1=contacts.get(i).getBody1().getName();
-      println(fc);
       if(fc.equals("hammer")){
         setPosition(spawnX, spawnY);
         reset();
@@ -33,8 +32,8 @@ class FPlayer extends FBox{
       if(fc.equals("ending") || fc1.equals("ending")){
         level++;
         if(level==2){
-          spawnX=50;
-          spawnY=900;
+          spawnX=5*gridSize;
+          spawnY=96*gridSize-60;
         }
         println(level);
         reset();
