@@ -7,7 +7,7 @@ class FPortal extends FGameObject{
     setPosition(x, y);
     connectedPortal=c;
     setName("portal");
-    //attachImage(portal);
+    attachImage(portal);
     
     setStatic(true);
     setSensor(true);
@@ -16,7 +16,7 @@ class FPortal extends FGameObject{
     super(gridSize, gridSize);
     setPosition(x, y);
     setName("portal");
-    //attachImage(portal);
+    attachImage(portal);
     setStatic(true);
     setSensor(true);
     //println("DASAWEIORJAKLDFJKLASDFK;ASDJFKLAJDF");

@@ -78,7 +78,7 @@ void setup(){
   water[1]=loadImage("waterWave.png");
   water[1].resize(gridSize, gridSize);
   portal=loadImage("portal.png");
-  portal.resize((int)(0.8*gridSize), (int)(0.8*gridSize));
+  portal.resize((int)(0.6*gridSize), (int)(0.6*gridSize));
   terrain = new ArrayList<FGameObject>();
   boxes=new ArrayList<>();
   enemies=new ArrayList<>();
@@ -228,6 +228,26 @@ void reset(){
         for(int i=openPortals.size()-1;i>=0;i--){
           if(openPortals.get(i).getFillColor()==c){
             FPortal p = new FPortal(x*gridSize, y*gridSize, openPortals.get(i));
+            FBox t = new FBox(gridSize, gridSize);
+           
+            t.setFillColor(c);
+            t.setStatic(true);
+            t.setSensor(true);
+            t.setPosition(x*gridSize, y*gridSize);
+            t.setName("none");
+            t.setNoStroke();
+            world.add(t);
+            
+            FBox q = new FBox(gridSize, gridSize);
+            q.setFillColor(c);
+            q.setStatic(true);
+            q.setSensor(true);
+            q.setPosition(openPortals.get(i).getX(), openPortals.get(i).getY());
+            q.setNoStroke();
+            q.setName("none");
+            world.add(q);
+           
+            
             openPortals.get(i).attachPortal(p);
             p.setFillColor(c);
             terrain.add(p);

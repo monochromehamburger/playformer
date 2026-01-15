@@ -2,7 +2,7 @@ class FPlayer extends FBox{
   int frame;
   FPlayer(){
     super(gridSize, gridSize);
-    setPosition(26*gridSize, 27*gridSize-60);
+    setPosition(89*gridSize, 19*gridSize-60);
     setName("Player");
     setRotatable(false);
     setFillColor(#F404D3);
