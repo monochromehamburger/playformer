@@ -29,5 +29,6 @@ class FPortal extends FGameObject{
       player1.setPosition(connectedPortal.getX(), connectedPortal.getY());
       portalCooldown=60;
     }
+    setAngularVelocity(5);
   }
 }
