@@ -26,9 +26,9 @@ class FMovingPlatform extends FGameObject{
   }
   
   void act(){
-    setPosition(getX()+directionX*0.5, getY()+directionY*0.5);
+    setPosition(getX()+directionX, getY()+directionY);
     if(isTouching("Player")){
-      player1.setPosition(player1.getX()+directionX*0.5, player1.getY()+directionY*0.5);
+      player1.setPosition(player1.getX()+directionX, player1.getY()+directionY);
     }
     if(getX()>endX){
       directionX*=-1;
