@@ -2,7 +2,8 @@ class FPlayer extends FBox{
   int frame;
   FPlayer(){
     super(gridSize, gridSize);
-    setPosition(89*gridSize, 62*gridSize-60);
+    if(level==1)setPosition(spawnX, spawnY);
+    else setPosition(spawnX, spawnY);
     setName("Player");
     setRotatable(false);
     setFillColor(#F404D3);
@@ -37,6 +38,7 @@ class FPlayer extends FBox{
         }
         println(level);
         reset();
+        break;
       }
       if(contacts.get(i).contains("checkpoint")){
         spawnY=contacts.get(i).getY()-50;
